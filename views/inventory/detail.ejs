@@ -1,0 +1,37 @@
+<%- include("../partials/head") %>
+<%- include("../partials/nav") %>
+
+<main class="vehicle-detail">
+  <h1><%= vehicle.inv_make %> <%= vehicle.inv_model %></h1>
+
+  <section class="vehicle-detail__container">
+
+    <div class="vehicle-detail__image">
+      <img src="<%= vehicle.inv_image %>" alt="Image of <%= vehicle.inv_make %> <%= vehicle.inv_model %>">
+    </div>
+
+    <div class="vehicle-detail__info">
+      <p class="vehicle-detail__price">
+        <strong>Price:</strong>
+        $<%= new Intl.NumberFormat('en-US').format(vehicle.inv_price) %>
+      </p>
+
+      <p>
+        <strong>Mileage:</strong>
+        <%= new Intl.NumberFormat('en-US').format(vehicle.inv_miles) %> miles
+      </p>
+
+      <p>
+        <strong>Color:</strong> <%= vehicle.inv_color %>
+      </p>
+
+      <p class="vehicle-detail__description">
+        <strong>Description:</strong><br>
+        <%= vehicle.inv_description %>
+      </p>
+    </div>
+
+  </section>
+</main>
+
+<%- include("../partials/footer") %>
