@@ -1,9 +1,10 @@
 // utilities/index.js
 const invModel = require("../models/inventory-model")
 
-/** ナビゲーションの HTML を作る */
+// ナビ HTML を作る
 async function getNav() {
   const data = await invModel.getClassifications()
+
   let nav = '<nav id="primary-nav"><ul>'
   nav += '<li><a href="/">Home</a></li>'
 
@@ -15,75 +16,53 @@ async function getNav() {
   return nav
 }
 
-/** 分類一覧ページ用のグリッド */
+// 一覧グリッド
 function buildClassificationGrid(data) {
-  if (!data.rows || data.rows.length === 0) {
-    return "<p>No vehicles found.</p>"
-  }
-
-  const formatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  })
-
   let grid = '<ul class="vehicle-grid">'
-  data.rows.forEach((row) => {
-    const price = formatter.format(row.inv_price)
-    grid += `
-      <li>
-        <a href="/inv/detail/${row.inv_id}">
-          <img src="${row.inv_thumbnail}" alt="Image of ${row.inv_make} ${row.inv_model}">
-          <h2>${row.inv_make} ${row.inv_model}</h2>
-        </a>
-        <p class="vehicle-price">${price}</p>
-      </li>
-    `
-  })
-  grid += "</ul>"
 
+  data.rows.forEach((vehicle) => {
+    grid += `<li>
+      <a href="/inv/detail/${vehicle.inv_id}">
+        <img src="${vehicle.inv_thumbnail}" alt="Image of ${vehicle.inv_make} ${vehicle.inv_model}">
+      </a>
+      <h2>
+        <a href="/inv/detail/${vehicle.inv_id}">
+          ${vehicle.inv_make} ${vehicle.inv_model}
+        </a>
+      </h2>
+      <span>$${Number(vehicle.inv_price).toLocaleString("en-US")}</span>
+    </li>`
+  })
+
+  grid += "</ul>"
   return grid
 }
 
-/** 詳細ページのビューHTML */
-function buildVehicleDetailView(data) {
-  if (!data.rows || data.rows.length === 0) {
+// 詳細ビュー
+function buildVehicleDetailView(vehicle) {
+  if (!vehicle) {
     return "<p>Vehicle not found.</p>"
   }
 
-  const v = data.rows[0]
-
-  const priceFormatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  })
-  const milesFormatter = new Intl.NumberFormat("en-US")
-
-  const price = priceFormatter.format(v.inv_price)
-  const miles = milesFormatter.format(v.inv_miles)
-
   return `
-    <section class="vehicle-detail">
-      <div class="vehicle-detail-image">
-        <img src="${v.inv_image}" alt="Image of ${v.inv_make} ${v.inv_model}">
-      </div>
-      <div class="vehicle-detail-info">
-        <h2>${v.inv_year} ${v.inv_make} ${v.inv_model}</h2>
-        <p class="detail-price">${price}</p>
-        <p>Mileage: ${miles}</p>
-        <p class="detail-description">${v.inv_description}</p>
-      </div>
-    </section>
-  `
+  <section class="vehicle-detail">
+    <div class="vehicle-detail-image">
+      <img src="${vehicle.inv_image}" alt="Image of ${vehicle.inv_make} ${vehicle.inv_model}">
+    </div>
+    <div class="vehicle-detail-info">
+      <h1>${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}</h1>
+      <p class="detail-price">$${Number(vehicle.inv_price).toLocaleString("en-US")}</p>
+      <p class="detail-description">${vehicle.inv_description}</p>
+      <p>Mileage: ${Number(vehicle.inv_miles).toLocaleString("en-US")} miles</p>
+      <p>Color: ${vehicle.inv_color}</p>
+    </div>
+  </section>`
 }
 
-/** ルート用のエラーハンドララッパ */
+// 非同期エラーハンドラ
 function handleErrors(fn) {
-  return async function (req, res, next) {
-    try {
-      await fn(req, res, next)
-    } catch (err) {
-      next(err)
-    }
+  return function (req, res, next) {
+    Promise.resolve(fn(req, res, next)).catch(next)
   }
 }
 

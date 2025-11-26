@@ -1,3 +1,4 @@
+/* ベース */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -11,7 +12,12 @@ footer {
   color: #fff;
 }
 
-/* Navigation */
+/* ====== ヘッダーナビ ====== */
+#primary-nav {
+  background: #444;       /* ロゴの下にナビ用バー */
+  padding: 0.5rem 1rem;
+}
+
 #primary-nav ul {
   list-style: none;
   display: flex;
@@ -21,8 +27,13 @@ footer {
 }
 
 #primary-nav a {
-  color: #fff;
+  color: #fff;            /* 白文字でくっきり見えるように */
   text-decoration: none;
+  font-weight: bold;
+}
+
+#primary-nav a:hover {
+  text-decoration: underline;
 }
 
 /* Vehicle Grid */
@@ -32,6 +43,7 @@ footer {
   gap: 1rem;
   padding: 1rem;
   list-style: none;
+  margin: 0;
 }
 
 .vehicle-grid li {
