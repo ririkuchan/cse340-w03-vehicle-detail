@@ -3,6 +3,7 @@ body {
   margin: 0;
 }
 
+/* Header & Footer */
 header,
 footer {
   padding: 1rem;
@@ -10,7 +11,7 @@ footer {
   color: #fff;
 }
 
-/* ナビ */
+/* Navigation */
 #primary-nav ul {
   list-style: none;
   display: flex;
@@ -24,14 +25,13 @@ footer {
   text-decoration: none;
 }
 
-/* vehicle grid */
+/* Vehicle Grid */
 .vehicle-grid {
-  list-style: none;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1rem;
   padding: 1rem;
-  margin: 0;
+  list-style: none;
 }
 
 .vehicle-grid li {
@@ -45,25 +45,40 @@ footer {
   display: block;
 }
 
-/* detail */
+/* Vehicle Detail */
 .vehicle-detail {
   display: flex;
+  flex-wrap: wrap;
   gap: 2rem;
-  padding: 1rem;
+  margin: 2rem 1rem;
 }
 
-.vehicle-detail__image img {
+.vehicle-detail-image,
+.vehicle-detail-info {
+  flex: 1 1 300px;
+}
+
+.vehicle-detail-image img {
   max-width: 100%;
   height: auto;
+  display: block;
+  border-radius: 4px;
 }
 
-.vehicle-detail__price {
+.detail-price,
+.vehicle-price {
   font-size: 1.5rem;
   font-weight: bold;
+  margin: 0.5rem 0;
+}
+
+.detail-description {
+  margin-top: 1rem;
+  line-height: 1.5;
 }
 
 /* small screen */
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .vehicle-detail {
     flex-direction: column;
   }

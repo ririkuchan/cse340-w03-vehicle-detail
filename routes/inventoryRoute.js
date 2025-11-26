@@ -2,18 +2,18 @@
 const express = require("express")
 const router = new express.Router()
 const invController = require("../controllers/invController")
-const utilities = require("../utilities")
+const Util = require("../utilities")
 
 // /inv/type/:classificationId
 router.get(
   "/type/:classificationId",
-  utilities.handleErrors(invController.buildByClassificationId)
+  Util.handleErrors(invController.buildByClassificationId)
 )
 
 // /inv/detail/:invId
 router.get(
   "/detail/:invId",
-  utilities.handleErrors(invController.buildDetail)
+  Util.handleErrors(invController.buildDetail)
 )
 
 module.exports = router

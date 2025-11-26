@@ -5,24 +5,31 @@ require("dotenv").config()
 
 const rootRoutes = require("./routes/root")
 const invRoutes = require("./routes/inventoryRoute")
+const Util = require("./utilities")
 
 const app = express()
 const PORT = process.env.PORT || 5500
 
-// View Engine
+// View engine
 app.set("view engine", "ejs")
 app.set("views", path.join(__dirname, "views"))
 
-// 静的フォルダ
+// 静的ファイル
 app.use(express.static(path.join(__dirname, "public")))
 
-// Routes
+// ルート
 app.use("/", rootRoutes)
 app.use("/inv", invRoutes)
 
-// 404 Handler
-app.use((req, res, next) => {
-  const nav = "" // ※ 必要なら Util.getNav() を呼んでもOK
+// 404（存在しないURL）
+app.use(async (req, res, next) => {
+  let nav = ""
+  try {
+    nav = await Util.getNav()
+  } catch (err) {
+    console.error("Nav build error in 404:", err)
+  }
+
   res.status(404).render("error/error", {
     title: "404 Not Found",
     message: "The page you requested could not be found.",
@@ -30,13 +37,20 @@ app.use((req, res, next) => {
   })
 })
 
-// 500 Error Handler
-app.use((err, req, res, next) => {
+// エラーハンドラ（500など）
+app.use(async (err, req, res, next) => {
   console.error("Server Error:", err)
-  const nav = "" // ※ 必要なら Util.getNav() を呼んでもOK
-  res.status(500).render("error/error", {
+
+  let nav = ""
+  try {
+    nav = await Util.getNav()
+  } catch (navErr) {
+    console.error("Nav build error in error handler:", navErr)
+  }
+
+  res.status(err.status || 500).render("error/error", {
     title: "Server Error",
-    message: err.message,
+    message: "Sorry, something went wrong.",
     nav,
   })
 })
