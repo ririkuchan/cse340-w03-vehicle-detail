@@ -89,6 +89,13 @@ footer {
   line-height: 1.5;
 }
 
+/* Footer links - fix contrast */
+footer a,
+footer a:visited {
+  color: #fff;          /* 白にして背景 #222 としっかりコントラスト */
+  text-decoration: underline; /* 下線でリンクと分かりやすく */
+}
+
 /* small screen */
 @media (max-width: 600px) {
   .vehicle-detail {
