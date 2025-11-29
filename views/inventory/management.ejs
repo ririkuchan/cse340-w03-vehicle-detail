@@ -1,0 +1,39 @@
+<%- include("../partials/head") %>
+<%- include("../partials/nav") %>
+
+<main>
+  <h1>Inventory Management</h1>
+
+  <% if (message) { %>
+    <div class="notice"><%= message %></div>
+  <% } %>
+
+  <section>
+    <h2>Vehicle Management</h2>
+    <p><a href="/inv/add-classification">Add New Classification</a></p>
+    <p><a href="/inv/add-inventory">Add New Vehicle</a></p>
+  </section>
+
+  <section>
+    <h2>Existing Inventory</h2>
+
+    <noscript>
+      <p><strong>JavaScript is required to view the inventory list.</strong></p>
+    </noscript>
+
+    <table id="inventory-display">
+      <thead>
+        <tr>
+          <th>Vehicle</th>
+          <th>Classification</th>
+          <th colspan="2">Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <script src="/js/inventory.js"></script>
+</main>
+
+<%- include("../partials/footer") %>

@@ -59,7 +59,7 @@ function buildVehicleDetailView(vehicle) {
   </section>`
 }
 
-// 非同期エラーハンドラ
+// ★ 非同期エラーハンドラ（ここが今回エラーの原因だった）
 function handleErrors(fn) {
   return function (req, res, next) {
     Promise.resolve(fn(req, res, next)).catch(next)
