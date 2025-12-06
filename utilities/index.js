@@ -66,9 +66,27 @@ function handleErrors(fn) {
   }
 }
 
+// ★ Build classification <select> for forms
+async function buildClassificationList(selectedId) {
+  const data = await invModel.getClassifications();
+
+  let select = '<select id="classification_id" name="classification_id" required>';
+  select += '<option value="">Choose a Classification</option>';
+
+  data.rows.forEach((row) => {
+    const selected =
+      Number(selectedId) === Number(row.classification_id) ? " selected" : "";
+    select += `<option value="${row.classification_id}"${selected}>${row.classification_name}</option>`;
+  });
+
+  select += "</select>";
+  return select;
+}
+
 module.exports = {
   getNav,
   buildClassificationGrid,
   buildVehicleDetailView,
   handleErrors,
+  buildClassificationList,
 }

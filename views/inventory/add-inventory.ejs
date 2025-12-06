@@ -1,48 +1,52 @@
 <%- include("../partials/head") %>
 <%- include("../partials/nav") %>
 
-<main>
-  <h1>Add New Vehicle</h1>
-  <p>Use the form below to add a new vehicle to the inventory.</p>
+<h1>Add New Vehicle</h1>
 
-  <% if (message) { %>
-    <div class="notice"><%= message %></div>
-  <% } %>
+<p>Use the form below to add a new vehicle to the inventory.</p>
 
-  <% if (errors && errors.length) { %>
-    <div class="errors">
-      <ul>
-        <% errors.forEach(e => { %>
-          <li><%= e.msg %></li>
-        <% }) %>
-      </ul>
-    </div>
-  <% } %>
+<% if (message) { %>
+  <p class="notice"><%= message %></p>
+<% } %>
 
-  <form action="/inv/add-inventory" method="post" novalidate>
-    <!-- Classification -->
+<% if (errors && errors.length) { %>
+  <div class="form-errors">
+    <p>Please correct the following errors:</p>
+    <ul>
+      <% errors.forEach(e => { %>
+        <li><%= e.msg %></li>
+      <% }) %>
+    </ul>
+  </div>
+<% } %>
+
+<form method="post" action="/inv/add-inventory" class="vehicle-form">
+  <!-- Classification -->
+  <div class="form-field">
     <label for="classification_id">Classification</label>
+
     <% if (typeof classificationList !== "undefined" && classificationList) { %>
-      <!-- validation から来たとき用（HTML文字列） -->
+      <!-- validation エラー時はこちら（HTML文字列） -->
       <%- classificationList %>
     <% } else if (typeof classifications !== "undefined" && classifications.length) { %>
-      <!-- 最初の GET 表示用（rows 配列） -->
-      <select name="classification_id" id="classificationList" required>
+      <!-- 初回表示時はこちら（配列） -->
+      <select id="classification_id" name="classification_id" required>
         <option value="">Choose a Classification</option>
         <% classifications.forEach(c => { %>
           <option
             value="<%= c.classification_id %>"
-            <%= (classification_id == c.classification_id) ? "selected" : "" %>
-          >
+            <%= Number(classification_id) === c.classification_id ? "selected" : "" %>>
             <%= c.classification_name %>
           </option>
         <% }) %>
       </select>
     <% } else { %>
-      <p><strong>No classifications found. Please add a classification first.</strong></p>
+      <p>No classifications found. Please add a classification first.</p>
     <% } %>
+  </div>
 
-    <!-- Make -->
+  <!-- Make -->
+  <div class="form-field">
     <label for="inv_make">Make</label>
     <input
       type="text"
@@ -51,8 +55,10 @@
       required
       value="<%= inv_make || '' %>"
     >
+  </div>
 
-    <!-- Model -->
+  <!-- Model -->
+  <div class="form-field">
     <label for="inv_model">Model</label>
     <input
       type="text"
@@ -61,53 +67,58 @@
       required
       value="<%= inv_model || '' %>"
     >
+  </div>
 
-    <!-- Year -->
+  <!-- Year -->
+  <div class="form-field">
     <label for="inv_year">Year</label>
     <input
       type="number"
       id="inv_year"
       name="inv_year"
-      min="1900"
-      max="9999"
       required
       value="<%= inv_year || '' %>"
     >
+  </div>
 
-    <!-- Price -->
+  <!-- Price -->
+  <div class="form-field">
     <label for="inv_price">Price</label>
     <input
       type="number"
+      step="0.01"
       id="inv_price"
       name="inv_price"
-      min="0"
-      step="0.01"
       required
       value="<%= inv_price || '' %>"
     >
+  </div>
 
-    <!-- Miles -->
+  <!-- Miles -->
+  <div class="form-field">
     <label for="inv_miles">Miles</label>
     <input
       type="number"
       id="inv_miles"
       name="inv_miles"
-      min="0"
       required
       value="<%= inv_miles || '' %>"
     >
+  </div>
 
-    <!-- Description （★追加） -->
+  <!-- Description -->
+  <div class="form-field">
     <label for="inv_description">Description</label>
     <textarea
       id="inv_description"
       name="inv_description"
       rows="4"
-      cols="40"
       required
     ><%= inv_description || '' %></textarea>
+  </div>
 
-    <!-- Color -->
+  <!-- Color -->
+  <div class="form-field">
     <label for="inv_color">Color</label>
     <input
       type="text"
@@ -116,29 +127,33 @@
       required
       value="<%= inv_color || '' %>"
     >
+  </div>
 
-    <!-- Image -->
+  <!-- Image Path (デフォルト画像つき) -->
+  <div class="form-field">
     <label for="inv_image">Image Path</label>
     <input
       type="text"
       id="inv_image"
       name="inv_image"
       required
-      value="<%= inv_image || '' %>"
+      value="<%= inv_image || '/images/vehicles/no-image.png' %>"
     >
+  </div>
 
-    <!-- Thumbnail -->
+  <!-- Thumbnail Path (デフォルト画像つき) -->
+  <div class="form-field">
     <label for="inv_thumbnail">Thumbnail Path</label>
     <input
       type="text"
       id="inv_thumbnail"
       name="inv_thumbnail"
       required
-      value="<%= inv_thumbnail || '' %>"
+      value="<%= inv_thumbnail || '/images/vehicles/no-image-tn.png' %>"
     >
+  </div>
 
-    <button type="submit">Add Vehicle</button>
-  </form>
-</main>
+  <button type="submit">Add Vehicle</button>
+</form>
 
 <%- include("../partials/footer") %>

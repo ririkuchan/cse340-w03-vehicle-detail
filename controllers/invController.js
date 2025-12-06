@@ -91,12 +91,13 @@ async function buildAddInventory(req, res, next) {
 }
 
 // POST: /inv/add-inventory
+// POST: /inv/add-inventory
 async function registerInventory(req, res, next) {
   try {
-    // 何が来ているか一応ログ
-    console.log("POST /inv/add-inventory body:", req.body)
+    // 何が来ているかログ
+    console.log("POST /inv/add-inventory body:", req.body);
 
-    const {
+    let {
       classification_id,
       inv_make,
       inv_model,
@@ -107,7 +108,15 @@ async function registerInventory(req, res, next) {
       inv_image,
       inv_thumbnail,
       inv_description,
-    } = req.body
+    } = req.body;
+
+    // ★ フォームが空のときの保険（デフォルト画像）
+    if (!inv_image) {
+      inv_image = "/images/vehicles/no-image.png";
+    }
+    if (!inv_thumbnail) {
+      inv_thumbnail = "/images/vehicles/no-image-tn.png";
+    }
 
     const addResult = await invModel.addInventory(
       inv_make,
@@ -120,17 +129,16 @@ async function registerInventory(req, res, next) {
       inv_miles,
       inv_color,
       classification_id
-    )
+    );
 
     if (addResult.rowCount > 0) {
       if (req.flash) {
-        req.flash("notice", "Vehicle was successfully added.")
+        req.flash("notice", "Vehicle was successfully added.");
       }
-      return res.redirect("/inv/")
+      return res.redirect("/inv/");
     } else {
-      const nav = await Util.getNav()
-      const classifications = (await invModel.getClassifications()).rows
-
+      const nav = await Util.getNav();
+      const classifications = (await invModel.getClassifications()).rows;
       return res.status(400).render("inventory/add-inventory", {
         title: "Add New Vehicle",
         nav,
@@ -147,13 +155,14 @@ async function registerInventory(req, res, next) {
         inv_image,
         inv_thumbnail,
         inv_description,
-      })
+      });
     }
   } catch (err) {
-    console.error("registerInventory error:", err)
-    next(err)
+    console.error("registerInventory error:", err);
+    next(err);
   }
 }
+
 
 async function buildByClassificationId(req, res, next) {
   try {
