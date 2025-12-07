@@ -1,22 +1,24 @@
 // utilities/index.js
 const invModel = require("../models/inventory-model")
+const jwt = require("jsonwebtoken")
 
-// ナビ HTML を作る
+// ===== ナビ HTML を作る =====
 async function getNav() {
   const data = await invModel.getClassifications()
 
-  let nav = '<nav id="primary-nav"><ul>'
+  // navタグは head.ejs 側で wrap するので、ここは <ul> のみ返す
+  let nav = "<ul>"
   nav += '<li><a href="/">Home</a></li>'
 
   data.rows.forEach((row) => {
     nav += `<li><a href="/inv/type/${row.classification_id}">${row.classification_name}</a></li>`
   })
 
-  nav += "</ul></nav>"
+  nav += "</ul>"
   return nav
 }
 
-// 一覧グリッド
+// ===== 一覧グリッド =====
 function buildClassificationGrid(data) {
   let grid = '<ul class="vehicle-grid">'
 
@@ -38,7 +40,7 @@ function buildClassificationGrid(data) {
   return grid
 }
 
-// 詳細ビュー
+// ===== 詳細ビュー =====
 function buildVehicleDetailView(vehicle) {
   if (!vehicle) {
     return "<p>Vehicle not found.</p>"
@@ -59,29 +61,66 @@ function buildVehicleDetailView(vehicle) {
   </section>`
 }
 
-// ★ 非同期エラーハンドラ（ここが今回エラーの原因だった）
+// ===== 非同期エラーハンドラ =====
 function handleErrors(fn) {
   return function (req, res, next) {
     Promise.resolve(fn(req, res, next)).catch(next)
   }
 }
 
-// ★ Build classification <select> for forms
+// ===== classification <select> を作る =====
 async function buildClassificationList(selectedId) {
-  const data = await invModel.getClassifications();
+  const data = await invModel.getClassifications()
 
-  let select = '<select id="classification_id" name="classification_id" required>';
-  select += '<option value="">Choose a Classification</option>';
+  let select = '<select id="classification_id" name="classification_id" required>'
+  select += '<option value="">Choose a Classification</option>'
 
   data.rows.forEach((row) => {
     const selected =
-      Number(selectedId) === Number(row.classification_id) ? " selected" : "";
-    select += `<option value="${row.classification_id}"${selected}>${row.classification_name}</option>`;
-  });
+      Number(selectedId) === Number(row.classification_id) ? " selected" : ""
+    select += `<option value="${row.classification_id}"${selected}>${row.classification_name}</option>`
+  })
 
-  select += "</select>";
-  return select;
+  select += "</select>"
+  return select
 }
+
+// ===== JWT チェック（毎リクエスト実行） =====
+function checkJWTToken(req, res, next) {
+  // デフォルト
+  res.locals.loggedin = false
+  res.locals.accountData = null
+
+  const token = req.cookies ? req.cookies.jwt : null
+  if (!token) {
+    // ログインしていない → そのまま次へ
+    return next()
+  }
+
+  try {
+    const payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
+    res.locals.loggedin = true
+    res.locals.accountData = payload
+  } catch (err) {
+    console.log("JWT verification failed:", err.message)
+    // 壊れたトークンの場合でもアプリを止めない
+  }
+
+  return next()
+}
+
+// ===== ログイン必須ページ用ミドルウェア =====
+function checkLogin(req, res, next) {
+  if (res.locals.loggedin) {
+    // JWT が有効 → そのまま進む
+    return next()
+  }
+  // ログインしていない → ログイン画面へ
+  return res.redirect("/account/login")
+}
+
+
+
 
 module.exports = {
   getNav,
@@ -89,4 +128,6 @@ module.exports = {
   buildVehicleDetailView,
   handleErrors,
   buildClassificationList,
+  checkJWTToken,
+  checkLogin,
 }

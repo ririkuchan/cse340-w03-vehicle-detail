@@ -2,30 +2,40 @@
 const express = require("express")
 const path = require("path")
 require("dotenv").config()
+const cookieParser = require("cookie-parser")
 
 const rootRoutes = require("./routes/root")
 const invRoutes = require("./routes/inventoryRoute")
+const accountRoutes = require("./routes/accountRoute")
 const Util = require("./utilities")
 
 const app = express()
 const PORT = process.env.PORT || 5500
 
-// View engine
+// ===== View engine 設定 =====
 app.set("view engine", "ejs")
 app.set("views", path.join(__dirname, "views"))
 
-// ★ ここで POST データを読む設定（超重要）
+// ===== ミドルウェア =====
+// POST データ
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
+// Cookie（JWT 用）
+app.use(cookieParser())
 
 // 静的ファイル
 app.use(express.static(path.join(__dirname, "public")))
 
-// ルート
+// 毎リクエスト JWT をチェックして res.locals に loggedin / accountData をセット
+app.use(Util.checkJWTToken)
+
+// ===== ルート登録 =====
 app.use("/", rootRoutes)
 app.use("/inv", invRoutes)
+app.use("/account", accountRoutes)
 
-// 404（存在しないURL）
+// ===== 404（存在しないURL） =====
 app.use(async (req, res, next) => {
   let nav = ""
   try {
@@ -41,7 +51,7 @@ app.use(async (req, res, next) => {
   })
 })
 
-// エラーハンドラ（500など）
+// ===== 共通エラーハンドラ（500など） =====
 app.use(async (err, req, res, next) => {
   console.error("Server Error:", err)
 
@@ -59,6 +69,7 @@ app.use(async (err, req, res, next) => {
   })
 })
 
+// ===== サーバー起動 =====
 app.listen(PORT, () => {
   console.log(`App running at http://localhost:${PORT}`)
 })

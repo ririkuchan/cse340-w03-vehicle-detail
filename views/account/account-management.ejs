@@ -1,0 +1,42 @@
+<%- include("../partials/head") %>
+
+<main>
+  <% if (message) { %>
+    <div class="notice"><%= message %></div>
+  <% } %>
+
+  <h1>Account Management</h1>
+
+  <% if (locals.accountData) { %>
+    <% const user = locals.accountData; %>
+
+    <!-- 挨拶 -->
+    <h2>Welcome <%= user.account_firstname %></h2>
+
+    <!-- 基本アカウント操作 -->
+    <section>
+      <h3>Account Settings</h3>
+      <ul>
+        <li>
+          <a href="/account/update">Update Account Information</a>
+        </li>
+        <li>
+          <a href="/account/update-password">Change Password</a>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Employee / Admin 専用機能 -->
+    <% if (user.account_type === "Employee" || user.account_type === "Admin") { %>
+      <section>
+        <h3>Inventory Management</h3>
+        <p><a href="/inv/">Manage Inventory</a></p>
+      </section>
+    <% } %>
+
+  <% } else { %>
+    <p>You are not logged in.</p>
+  <% } %>
+</main>
+
+<%- include("../partials/footer") %>

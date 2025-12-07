@@ -1,0 +1,58 @@
+<%- include("../partials/head") %>
+
+<main>
+  <h1>Update Account</h1>
+
+  <% if (message) { %>
+    <p class="notice"><%= message %></p>
+  <% } %>
+
+  <% if (errors && errors.length) { %>
+    <div class="form-errors">
+      <ul>
+        <% errors.forEach(err => { %>
+          <li><%= err.msg %></li>
+        <% }) %>
+      </ul>
+    </div>
+  <% } %>
+
+  <form class="login-form" method="POST" action="/account/update">
+    <div class="form-group">
+      <label for="account_firstname">First Name</label>
+      <input
+        type="text"
+        id="account_firstname"
+        name="account_firstname"
+        required
+        value="<%= account ? account.account_firstname : '' %>"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="account_lastname">Last Name</label>
+      <input
+        type="text"
+        id="account_lastname"
+        name="account_lastname"
+        required
+        value="<%= account ? account.account_lastname : '' %>"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="account_email">Email</label>
+      <input
+        type="email"
+        id="account_email"
+        name="account_email"
+        required
+        value="<%= account ? account.account_email : '' %>"
+      />
+    </div>
+
+    <button type="submit">Save Changes</button>
+  </form>
+</main>
+
+<%- include("../partials/footer") %>

@@ -140,3 +140,49 @@ footer a:visited {
   border: 1px solid #339;
 }
 
+/* Login form layout */
+.login-form {
+  max-width: 400px;
+  margin: 2rem auto;
+}
+
+.login-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.login-form label {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 0.4rem;
+  box-sizing: border-box;
+}
+
+.login-form button {
+  padding: 0.4rem 0.8rem;
+}
+
+/* Login page wrapper */
+.login-page {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+/* エラーメッセージの見た目 */
+.flash-message {
+  margin-bottom: 1rem;
+  padding: 0.5rem 0.75rem;
+  background: #ffe5e5;
+  border: 1px solid #c00;
+}
+
+.notice {
+  color: red;
+  margin-bottom: 1rem;
+}
+
+
