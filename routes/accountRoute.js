@@ -4,6 +4,15 @@ const accountController = require("../controllers/accountController")
 const Util = require("../utilities")
 const accountValidate = require("../utilities/account-validation")
 
+// Register ★追加
+router.get("/register", accountController.buildRegister)
+router.post(
+  "/register",
+  accountValidate.registrationRules(),
+  accountValidate.checkRegData,
+  accountController.registerAccount
+)
+
 // Login
 router.get("/login", accountController.buildLogin)
 router.post("/login", accountController.loginAccount)

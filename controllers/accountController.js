@@ -6,6 +6,73 @@ const Util = require("../utilities")
 
 const accountController = {}
 
+/**
+ * GET /account/register
+ * 新規登録フォームの表示
+ */
+accountController.buildRegister = async (req, res, next) => {
+  try {
+    const nav = await Util.getNav()
+    res.render("account/register", {
+      title: "Register",
+      nav,
+      errors: null,
+      account_firstname: "",
+      account_lastname: "",
+      account_email: "",
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+/**
+ * POST /account/register
+ * 新規アカウントを登録
+ */
+accountController.registerAccount = async (req, res, next) => {
+  try {
+    const { account_firstname, account_lastname, account_email, account_password } =
+      req.body
+
+    const hashedPassword = await bcrypt.hash(account_password, 10)
+
+    const regResult = await accountModel.registerAccount(
+      account_firstname,
+      account_lastname,
+      account_email,
+      hashedPassword
+    )
+
+    const nav = await Util.getNav()
+
+    if (regResult) {
+      req.flash(
+        "notice",
+        `Congratulations, you're registered ${account_firstname}. Please log in.`
+      )
+      return res.status(201).render("account/login", {
+        title: "Login",
+        nav,
+        errors: null,
+      })
+    } else {
+      req.flash("notice", "Sorry, the registration failed.")
+      return res.status(500).render("account/register", {
+        title: "Register",
+        nav,
+        errors: null,
+        account_firstname,
+        account_lastname,
+        account_email,
+      })
+    }
+  } catch (err) {
+    next(err)
+  }
+}
+
+
 /* =======================
  * GET /account/login
  * ======================= */
