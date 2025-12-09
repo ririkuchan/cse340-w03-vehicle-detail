@@ -38,9 +38,40 @@ async function updatePassword(hashedPassword, account_id) {
   return pool.query(sql, [hashedPassword, account_id])
 }
 
+/** 新規アカウント登録 */
+async function registerAccount(firstname, lastname, email, hashedPassword) {
+  const sql = `
+    INSERT INTO public.account (
+      account_firstname,
+      account_lastname,
+      account_email,
+      account_password
+    )
+    VALUES ($1, $2, $3, $4)
+    RETURNING *
+  `
+  const result = await pool.query(sql, [
+    firstname,
+    lastname,
+    email,
+    hashedPassword,
+  ])
+  return result.rows[0]
+}
+
+/** email が既に存在するかチェック */
+async function checkExistingEmail(account_email) {
+  const sql = "SELECT account_email FROM public.account WHERE account_email = $1"
+  const result = await pool.query(sql, [account_email])
+  // 1件以上あれば true
+  return result.rowCount > 0
+}
+
 module.exports = {
   getAccountByEmail,
   getAccountById,
   updateAccount,
   updatePassword,
+  registerAccount,
+  checkExistingEmail,
 }

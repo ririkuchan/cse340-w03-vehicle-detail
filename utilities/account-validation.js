@@ -29,18 +29,11 @@ const registrationRules = () => {
         }
       }),
 
+    // ★ここをゆるくした（8文字以上だけ）
     body("account_password")
       .trim()
-      .isStrongPassword({
-        minLength: 12,
-        minLowercase: 1,
-        minUppercase: 1,
-        minNumbers: 1,
-        minSymbols: 1,
-      })
-      .withMessage(
-        "Password must be at least 12 characters long and include uppercase, lowercase, number, and symbol."
-      ),
+      .isLength({ min: 8 })
+      .withMessage("Password must be at least 8 characters long."),
   ]
 }
 
