@@ -57,6 +57,12 @@ function buildVehicleDetailView(vehicle) {
       <p class="detail-description">${vehicle.inv_description}</p>
       <p>Mileage: ${Number(vehicle.inv_miles).toLocaleString("en-US")} miles</p>
       <p>Color: ${vehicle.inv_color}</p>
+
+      <div class="wishlist-action">
+        <a class="btn" href="/favorites/add/${vehicle.inv_id}">
+          Add to Wishlist
+        </a>
+      </div>
     </div>
   </section>`
 }
@@ -118,9 +124,6 @@ function checkLogin(req, res, next) {
   // ログインしていない → ログイン画面へ
   return res.redirect("/account/login")
 }
-
-
-
 
 module.exports = {
   getNav,

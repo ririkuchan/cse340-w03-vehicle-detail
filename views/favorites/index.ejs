@@ -1,0 +1,32 @@
+<%- include("../partials/head") %>
+
+<main>
+  <h1>My Wishlist</h1>
+
+  <% if (favorites && favorites.length > 0) { %>
+    <ul class="wishlist-list">
+      <% favorites.forEach(function(item) { %>
+        <li class="wishlist-item">
+          <div>
+            <strong>
+              <%= item.inv_year %> <%= item.inv_make %> <%= item.inv_model %>
+            </strong>
+            - $<%= item.inv_price %>
+          </div>
+
+          <% if (item.favorite_notes) { %>
+            <p>Notes: <%= item.favorite_notes %></p>
+          <% } %>
+
+          <form method="POST" action="/favorites/delete/<%= item.favorite_id %>">
+            <button type="submit">Remove</button>
+          </form>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p>You have no vehicles in your wishlist yet.</p>
+  <% } %>
+</main>
+
+<%- include("../partials/footer") %>

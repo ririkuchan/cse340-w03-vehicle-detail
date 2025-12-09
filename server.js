@@ -8,6 +8,8 @@ const rootRoutes = require("./routes/root")
 const invRoutes = require("./routes/inventoryRoute")
 const accountRoutes = require("./routes/accountRoute")
 const Util = require("./utilities")
+const favoriteRoute = require("./routes/favoriteRoute")
+
 
 const app = express()
 const PORT = process.env.PORT || 5500
@@ -30,10 +32,12 @@ app.use(express.static(path.join(__dirname, "public")))
 // 毎リクエスト JWT をチェックして res.locals に loggedin / accountData をセット
 app.use(Util.checkJWTToken)
 
+
 // ===== ルート登録 =====
 app.use("/", rootRoutes)
 app.use("/inv", invRoutes)
 app.use("/account", accountRoutes)
+app.use("/favorites", favoriteRoute)
 
 // ===== 404（存在しないURL） =====
 app.use(async (req, res, next) => {

@@ -1,0 +1,36 @@
+<%- include("../partials/head") %>
+
+<main>
+  <h1>Add to Wishlist</h1>
+
+  <% if (errors && errors.length > 0) { %>
+    <section class="notice">
+      <% errors.forEach(err => { %>
+        <p><%= err.msg %></p>
+      <% }) %>
+    </section>
+  <% } %>
+
+  <section class="vehicle-summary">
+    <h2><%= vehicle.inv_year %> <%= vehicle.inv_make %> <%= vehicle.inv_model %></h2>
+    <p>Price: $<%= Number(vehicle.inv_price).toLocaleString("en-US") %></p>
+  </section>
+
+  <form id="favoriteForm"
+        action="/favorites/add/<%= vehicle.inv_id %>"
+        method="POST">
+    <!-- inv_id を POST でも送る（バリデーション用） -->
+    <input type="hidden" name="inv_id" value="<%= vehicle.inv_id %>">
+
+    <label for="favorite_notes">Notes (optional, 500 chars max)</label>
+    <textarea id="favorite_notes"
+              name="favorite_notes"
+              maxlength="500"
+              rows="4"
+              cols="40"><%= favorite_notes || "" %></textarea>
+
+    <button type="submit">Save to Wishlist</button>
+  </form>
+</main>
+
+<%- include("../partials/footer") %>

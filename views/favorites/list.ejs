@@ -1,0 +1,35 @@
+<%- include("../partials/head") %>
+
+<main>
+  <h1>My Wishlist</h1>
+
+  <% if (locals.notice) { %>
+    <div class="notice"><%= notice %></div>
+  <% } %>
+
+  <% if (!favorites || favorites.length === 0) { %>
+    <p>You have no vehicles in your wishlist yet.</p>
+  <% } else { %>
+    <ul class="wishlist-list">
+      <% favorites.forEach(fav => { %>
+        <li>
+          <h2>
+            <a href="/inv/detail/<%= fav.inv_id %>">
+              <%= fav.inv_year %> <%= fav.inv_make %> <%= fav.inv_model %>
+            </a>
+          </h2>
+          <p>$<%= Number(fav.inv_price).toLocaleString("en-US") %></p>
+          <% if (fav.favorite_notes) { %>
+            <p>Notes: <%= fav.favorite_notes %></p>
+          <% } %>
+          <form method="POST" action="/favorites/delete">
+            <input type="hidden" name="favorite_id" value="<%= fav.favorite_id %>">
+            <button type="submit">Remove</button>
+          </form>
+        </li>
+      <% }) %>
+    </ul>
+  <% } %>
+</main>
+
+<%- include("../partials/footer") %>
